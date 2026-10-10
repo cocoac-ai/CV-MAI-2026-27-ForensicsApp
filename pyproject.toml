@@ -9,7 +9,9 @@ description = "Extensible Tkinter starter for an MSc Computer Vision course"
 requires-python = ">=3.10"
 dependencies = [
     "Pillow>=10.0,<13",
-    "scikit-image>=0.25",
+    "scikit-image>=0.25.2",
+    "matplotlib>=3.8",
+    "numpy>=1.24",
 ]
 
 [tool.setuptools.packages.find]

@@ -1,10 +1,13 @@
 """Register course functionality here so it appears in the sidebar."""
 
+from .channel_split import ChannelSplitTool
 from .grayscale import GrayscaleTool
+from .histogram import HistogramTool
 from .image_info import ImageInfoTool
 from .registry import ToolRegistry
 from .sharpening import SharpeningTool
 
+from .contrast_stretching import ContrastStretchingTool
 
 def build_tool_registry() -> ToolRegistry:
     return ToolRegistry(
@@ -12,6 +15,9 @@ def build_tool_registry() -> ToolRegistry:
             ImageInfoTool(),
             GrayscaleTool(),
             SharpeningTool(),
+            ContrastStretchingTool(),
+            HistogramTool(),
+            ChannelSplitTool(),
         ]
     )
 
