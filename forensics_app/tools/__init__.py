@@ -5,13 +5,14 @@ from .grayscale import GrayscaleTool
 from .histogram import HistogramTool
 from .image_info import ImageInfoTool
 from .registry import ToolRegistry
-
+from .contrast_stretching import ContrastStretchingTool
 
 def build_tool_registry() -> ToolRegistry:
     return ToolRegistry(
         [
             ImageInfoTool(),
             GrayscaleTool(),
+            ContrastStretchingTool(),
             HistogramTool(),
             ChannelSplitTool(),
         ]
