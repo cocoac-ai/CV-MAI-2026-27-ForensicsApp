@@ -2,6 +2,7 @@
 
 from .channel_split import ChannelSplitTool
 from .grayscale import GrayscaleTool
+from .histogram import HistogramTool
 from .image_info import ImageInfoTool
 from .registry import ToolRegistry
 
@@ -11,6 +12,7 @@ def build_tool_registry() -> ToolRegistry:
         [
             ImageInfoTool(),
             GrayscaleTool(),
+            HistogramTool(),
             ChannelSplitTool(),
         ]
     )
