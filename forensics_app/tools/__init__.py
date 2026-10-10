@@ -1,9 +1,9 @@
 """Register course functionality here so it appears in the sidebar."""
 
 from .grayscale import GrayscaleTool
+from .histogram import HistogramTool
 from .image_info import ImageInfoTool
 from .registry import ToolRegistry
-from .histogram import HistogramTool
 
 
 def build_tool_registry() -> ToolRegistry:
