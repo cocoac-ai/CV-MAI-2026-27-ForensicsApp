@@ -5,8 +5,10 @@ from .grayscale import GrayscaleTool
 from .histogram import HistogramTool
 from .image_info import ImageInfoTool
 from .registry import ToolRegistry
+from .convolution import ConvolutionTool
+from .image_filters import ImageFiltersTool
+from .canny_edge import CannyTool
 from .sharpening import SharpeningTool
-
 from .contrast_stretching import ContrastStretchingTool
 
 def build_tool_registry() -> ToolRegistry:
@@ -14,6 +16,9 @@ def build_tool_registry() -> ToolRegistry:
         [
             ImageInfoTool(),
             GrayscaleTool(),
+            ConvolutionTool(),
+            ImageFiltersTool(),
+            CannyTool(),
             SharpeningTool(),
             ContrastStretchingTool(),
             HistogramTool(),
