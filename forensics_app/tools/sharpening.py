@@ -134,47 +134,15 @@ class SharpeningTool(ForensicsTool):
         radius = tk.DoubleVar(value=defaults.radius)
         amount = tk.DoubleVar(value=defaults.amount)
 
-        ttk.Label(
-            frame,
-            text="Radius (Gaussian sigma):",
-        ).grid(row=0, column=0, sticky="w")
+        params_box = ttk.LabelFrame(frame, text="Unsharp mask", padding=8)
+        params_box.pack(fill="both")
 
-        ttk.Spinbox(
-            frame,
-            from_=RADIUS_RANGE[0],
-            to=RADIUS_RANGE[1],
-            increment=0.5,
-            textvariable=radius,
-            width=8,
-        ).grid(
-            row=0,
-            column=1,
-            padx=(8, 0),
-            pady=4,
-        )
+        ttk.Label(params_box, text=f"Radius / Gaussian sigma ({RADIUS_RANGE[0]:g}-{RADIUS_RANGE[1]:g}):").pack(anchor="w")
+        radius_entry = ttk.Entry(params_box, textvariable=radius, width=10)
+        radius_entry.pack(anchor="w", pady=(4, 8))
 
-        ttk.Label(
-            frame,
-            text="Amount:",
-        ).grid(
-            row=1,
-            column=0,
-            sticky="w",
-        )
-
-        ttk.Spinbox(
-            frame,
-            from_=AMOUNT_RANGE[0],
-            to=AMOUNT_RANGE[1],
-            increment=0.5,
-            textvariable=amount,
-            width=8,
-        ).grid(
-            row=1,
-            column=1,
-            padx=(8, 0),
-            pady=4,
-        )
+        ttk.Label(params_box, text=f"Amount ({AMOUNT_RANGE[0]:g}-{AMOUNT_RANGE[1]:g}):").pack(anchor="w")
+        ttk.Entry(params_box, textvariable=amount, width=10).pack(anchor="w", pady=(4, 0))
 
         result: SharpeningParams | None = None
 
@@ -224,28 +192,13 @@ class SharpeningTool(ForensicsTool):
             window.destroy()
 
         buttons = ttk.Frame(frame)
-        buttons.grid(
-            row=2,
-            column=0,
-            columnspan=2,
-            pady=(12, 0),
-        )
-
-        ttk.Button(
-            buttons,
-            text="Apply",
-            command=apply,
-        ).pack(side="left", padx=4)
-
-        ttk.Button(
-            buttons,
-            text="Cancel",
-            command=window.destroy,
-        ).pack(side="left", padx=4)
+        buttons.pack(pady=(12, 0))
+        ttk.Button(buttons, text="Apply", command=apply).pack(side="left", padx=4)
+        ttk.Button(buttons, text="Cancel", command=window.destroy).pack(side="left", padx=4)
 
         window.bind("<Return>", lambda _event: apply())
         window.bind("<Escape>", lambda _event: window.destroy())
-
+        radius_entry.focus_set()
         window.grab_set()
         window.wait_window()
 

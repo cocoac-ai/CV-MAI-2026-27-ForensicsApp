@@ -115,15 +115,21 @@ class EdgeVisualizationTool(ForensicsTool):
         window.transient(parent)
         window.resizable(False, False)
 
-        ttk.Label(window, text="Canny sigma:").pack(padx=20, pady=(12, 4))
-        sigma_entry = ttk.Entry(window, width=12)
-        sigma_entry.pack()
+        frame = ttk.Frame(window, padding=12)
+        frame.pack(fill="both", expand=True)
+
+        sigma_box = ttk.LabelFrame(frame, text="Canny", padding=8)
+        sigma_box.pack(fill="both")
+        ttk.Label(sigma_box, text="Sigma (larger = fewer, smoother edges):").pack(anchor="w")
+        sigma_entry = ttk.Entry(sigma_box, width=10)
+        sigma_entry.pack(anchor="w", pady=(4, 0))
         sigma_entry.insert(0, "2")
 
-        ttk.Label(window, text="Style:").pack(pady=(12, 4))
+        style_box = ttk.LabelFrame(frame, text="Style", padding=8)
+        style_box.pack(fill="both", pady=(8, 0))
         style = tk.StringVar(value=STYLE_RED)
         for name in STYLES:
-            ttk.Radiobutton(window, text=name, value=name, variable=style).pack(anchor="w", padx=20)
+            ttk.Radiobutton(style_box, text=name, value=name, variable=style).pack(anchor="w")
 
         result = None
 
@@ -139,11 +145,14 @@ class EdgeVisualizationTool(ForensicsTool):
             result = (sigma, style.get())
             window.destroy()
 
-        buttons = ttk.Frame(window)
-        buttons.pack(pady=12)
+        buttons = ttk.Frame(frame)
+        buttons.pack(pady=(12, 0))
         ttk.Button(buttons, text="Apply", command=apply).pack(side="left", padx=4)
         ttk.Button(buttons, text="Cancel", command=window.destroy).pack(side="left", padx=4)
 
+        window.bind("<Return>", lambda _event: apply())
+        window.bind("<Escape>", lambda _event: window.destroy())
+        sigma_entry.focus_set()
         window.grab_set()
         window.wait_window()
         return result

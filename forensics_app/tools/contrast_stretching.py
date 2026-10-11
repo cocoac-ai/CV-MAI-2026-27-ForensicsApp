@@ -7,7 +7,7 @@ colour balance of the image is kept.
 from __future__ import annotations
 
 import tkinter as tk
-from tkinter import simpledialog
+from tkinter import messagebox, ttk
 
 import numpy as np
 from PIL import Image
@@ -44,14 +44,7 @@ class ContrastStretchingTool(ForensicsTool):
     def run(self, parent: tk.Misc, document: ImageDocument) -> ToolResult | None:
         assert document.current is not None  # guarded by the main window
 
-        clip_percent = simpledialog.askfloat(
-            "Contrast stretching",
-            "Percentage of pixels to clip at each end (0-49):",
-            initialvalue=2.0,
-            minvalue=0.0,
-            maxvalue=49.0,
-            parent=parent,
-        )
+        clip_percent = self._ask_clip_percent(parent)
         if clip_percent is None:
             return None  # the user pressed Cancel
 
@@ -84,3 +77,47 @@ class ContrastStretchingTool(ForensicsTool):
                 "Output mode": output.mode,
             },
         )
+
+    def _ask_clip_percent(self, parent: tk.Misc) -> float | None:
+        window = tk.Toplevel(parent)
+        window.title("Contrast stretching")
+        window.transient(parent)
+        window.resizable(False, False)
+
+        frame = ttk.Frame(window, padding=12)
+        frame.pack(fill="both", expand=True)
+
+        clip_box = ttk.LabelFrame(frame, text="Clip percentage", padding=8)
+        clip_box.pack(fill="both")
+        ttk.Label(clip_box, text="Pixels to clip at each end (0-49 %):").pack(anchor="w")
+        clip_entry = ttk.Entry(clip_box, width=10)
+        clip_entry.pack(anchor="w", pady=(4, 0))
+        clip_entry.insert(0, "2")
+
+        result: float | None = None
+
+        def apply() -> None:
+            nonlocal result
+            try:
+                value = float(clip_entry.get())
+            except ValueError:
+                value = -1.0
+            if not 0 <= value <= 49:
+                messagebox.showerror(
+                    "Invalid value", "Please enter a number between 0 and 49.", parent=window
+                )
+                return
+            result = value
+            window.destroy()
+
+        buttons = ttk.Frame(frame)
+        buttons.pack(pady=(12, 0))
+        ttk.Button(buttons, text="Apply", command=apply).pack(side="left", padx=4)
+        ttk.Button(buttons, text="Cancel", command=window.destroy).pack(side="left", padx=4)
+
+        window.bind("<Return>", lambda _event: apply())
+        window.bind("<Escape>", lambda _event: window.destroy())
+        clip_entry.focus_set()
+        window.grab_set()
+        window.wait_window()
+        return result
