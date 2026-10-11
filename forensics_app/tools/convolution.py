@@ -12,7 +12,7 @@ from .base import ForensicsTool, ToolResult
 class ConvolutionTool(ForensicsTool):
     tool_id = "convolution"
     title = "Convolution"
-    category = "Image processing"
+    category = "Set3"
     description = "Apply a custom kernel."
 
     def run(self, parent: tk.Misc, document: ImageDocument) -> ToolResult | None:

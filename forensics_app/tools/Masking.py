@@ -10,7 +10,7 @@ from forensics_app.tools.base import ForensicsTool, ToolResult
 class MaskingTool(ForensicsTool):
     tool_id = "masking"
     title = "Masking"
-    category = "Image"
+    category = "Set2"
     description = "Apply a threshold mask to the working image."
     requires_image = True
 

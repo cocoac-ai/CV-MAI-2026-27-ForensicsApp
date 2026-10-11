@@ -121,7 +121,7 @@ class HistogramWindow(tk.Toplevel):
 class HistogramTool(ForensicsTool):
     tool_id = "histogram"
     title = "Histogram"
-    category = "Image"
+    category = "Set2"
     description = "Show grayscale or RGB channel histograms in a separate window."
     requires_image = True
 

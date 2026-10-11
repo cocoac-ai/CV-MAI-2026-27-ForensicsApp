@@ -12,8 +12,8 @@ from .base import ForensicsTool, ToolResult
 
 class ImageFiltersTool(ForensicsTool):
     tool_id = "image_filters"
-    title = "Image Filters"
-    category = "Image processing"
+    title = "Image filters"
+    category = "Set3"
     description = "Apply different filters from scikit-image."
 
     def run(self, parent: tk.Misc, document: ImageDocument) -> ToolResult | None:
