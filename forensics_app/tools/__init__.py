@@ -8,6 +8,7 @@ from .registry import ToolRegistry
 from .convolution import ConvolutionTool
 from .image_filters import ImageFiltersTool
 from .canny_edge import CannyTool
+from .edge_visualization import EdgeVisualizationTool
 from .sharpening import SharpeningTool
 from .contrast_stretching import ContrastStretchingTool
 
@@ -19,6 +20,7 @@ def build_tool_registry() -> ToolRegistry:
             ConvolutionTool(),
             ImageFiltersTool(),
             CannyTool(),
+            EdgeVisualizationTool(),
             SharpeningTool(),
             ContrastStretchingTool(),
             HistogramTool(),
