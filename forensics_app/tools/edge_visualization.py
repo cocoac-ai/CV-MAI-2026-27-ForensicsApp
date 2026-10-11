@@ -24,12 +24,10 @@ STYLES = (STYLE_RED, STYLE_TRANSPARENT, STYLE_DIMMED, STYLE_CONTOUR)
 # How strongly the red overlay is mixed in (like imshow(overlay, alpha=0.5)).
 OVERLAY_ALPHA = 0.5
 
-
-# Canny edge map (True = edge) of the image's grayscale version
+# Set3: Canny edge map (True = edge) of the image's grayscale version
 def detect_edges(image: Image.Image, sigma: float) -> np.ndarray:
     gray = img_as_float(np.asarray(image.convert("L")))
     return feature.canny(gray, sigma=sigma)
-
 
 # Draw edges on a grayscale copy of image and return an RGB image.
 def overlay_edges(image: Image.Image, edges: np.ndarray, style: str) -> Image.Image:
@@ -48,19 +46,18 @@ def overlay_edges(image: Image.Image, edges: np.ndarray, style: str) -> Image.Im
         # For adding the layers together
         result = (1 - OVERLAY_ALPHA) * rgb + OVERLAY_ALPHA * overlay
     elif style == STYLE_DIMMED:
-        # 3. Darken everything except edges
+    # 3. Darken everything except edges
         result = rgb * 0.4
         result[edges] = [1, 1, 1]
     elif style == STYLE_CONTOUR:
-        # 4. Show edges as contours
+    # 4. Show edges as contours
         result = draw_contours(gray, edges)
     else:
         raise ValueError(f"Unknown style: {style}")
 
     return Image.fromarray(img_as_ubyte(result))
 
-
-# Same as the slide's ax.imshow + ax.contour, but drawn into an image
+# For option 4 to draw into an image
 def draw_contours(gray: np.ndarray, edges: np.ndarray) -> np.ndarray:
     height, width = gray.shape
     # Create canvas

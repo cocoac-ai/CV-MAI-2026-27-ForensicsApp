@@ -16,7 +16,7 @@ from skimage import exposure
 from forensics_app.core import ImageDocument
 from .base import ForensicsTool, ToolResult
 
-# Stretch a uint8 image (gray or RGB). Returns (result, p_low, p_high)."""
+# Set2: Stretch a uint8 image (gray or RGB). Returns (result, p_low, p_high)."""
 def stretch_contrast(image: np.ndarray, clip_percent: float) -> tuple[np.ndarray, float, float]:
     # One pair of percentiles computed over all channels together.
     p_low, p_high = np.percentile(image, (clip_percent, 100 - clip_percent))

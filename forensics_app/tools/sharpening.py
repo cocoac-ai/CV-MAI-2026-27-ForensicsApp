@@ -43,8 +43,8 @@ def unsharp_mask(image: np.ndarray, radius: float, amount: float) -> UnsharpMask
     else:
         channel_axis = None
 
-    # Apply Gaussian blur, reflect for edges
-    blurred = filters.gaussian(image, sigma=radius, mode="reflect",channel_axis=channel_axis)
+    # Apply Gaussian blur (same call as the slide)
+    blurred = filters.gaussian(image, sigma=radius, channel_axis=channel_axis)
 
     # Extract details from the original image.
     detail = image - blurred
@@ -54,36 +54,18 @@ def unsharp_mask(image: np.ndarray, radius: float, amount: float) -> UnsharpMask
 
     return UnsharpMaskResult(blurred=blurred, detail=detail, sharpened=sharpened)
 
-# Return an L/RGB base image and the alpha channel, if present
-def split_alpha(image: Image.Image) -> tuple[Image.Image, Image.Image | None]:
-
-    if image.mode == "P":
-        image = image.convert("RGBA" if "transparency" in image.info else "RGB")
-
-    alpha = image.getchannel("A") if "A" in image.getbands() else None
-
-    gray_modes = {"1", "L", "LA", "I", "I;16", "F"}
-
-    if image.mode in gray_modes:
-        base = image.convert("L")
-    else:
-        base = image.convert("RGB")
-
-    return base, alpha
-
-# Apply unsharp masking while preserving color and transparency
+# Apply unsharp masking; grayscale stays grayscale, everything else becomes RGB
 def sharpen_image(image: Image.Image, params: SharpeningParams) -> Image.Image:
-    base, alpha = split_alpha(image)
-    array = util.img_as_float(np.asarray(base))
+    if image.mode in {"1", "L", "LA", "I", "I;16", "F"}:
+        image = image.convert("L")
+    else:
+        image = image.convert("RGB")
+
+    array = util.img_as_float(np.asarray(image))
 
     result = unsharp_mask(array, params.radius, params.amount)
 
-    sharpened = Image.fromarray(util.img_as_ubyte(result.sharpened))
-
-    if alpha is not None:
-        sharpened.putalpha(alpha)
-
-    return sharpened
+    return Image.fromarray(util.img_as_ubyte(result.sharpened))
 
 
 class SharpeningTool(ForensicsTool):

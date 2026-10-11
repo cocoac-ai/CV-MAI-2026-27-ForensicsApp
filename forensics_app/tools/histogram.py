@@ -25,6 +25,11 @@ CHANNEL_COLOURS = {
     "Blue": "tab:blue",
 }
 
+# Set2: Calculate the frequency of each intensity level using NumPy
+def freq_counts(plane: np.ndarray) -> np.ndarray:
+    counts, _ = np.histogram(plane.ravel(),bins=LEVELS,range=(0, LEVELS))
+    return counts
+
 
 # Normalise any PIL mode to 8-bit L or RGB.
 def to_8bit(image: Image.Image) -> Image.Image:
@@ -39,7 +44,6 @@ def to_8bit(image: Image.Image) -> Image.Image:
 
     return image.convert("RGB")
 
-
 # Pixel counts per intensity level (0-255).
 def compute_histograms(image: Image.Image) -> dict[str, np.ndarray]:
     image = to_8bit(image)
@@ -52,11 +56,6 @@ def compute_histograms(image: Image.Image) -> dict[str, np.ndarray]:
         return results
     
     return {"Grayscale": freq_counts(np.asarray(image.convert("L")))}
-
-# Set3: Calculate the frequency of each intensity level using NumPy
-def freq_counts(plane: np.ndarray) -> np.ndarray:
-    counts, _ = np.histogram(plane.ravel(),bins=LEVELS,range=(0, LEVELS))
-    return counts
 
 # Summary statistics derived from a 256-bin histogram."""
 def histogram_statistics(counts: np.ndarray) -> dict[str, float]:
@@ -77,6 +76,7 @@ def histogram_statistics(counts: np.ndarray) -> dict[str, float]:
         "clipped_high": 100.0 * counts[-1] / total,
     }
 
+# Function to draw histogram with matplot
 def draw_histograms(axes: Axes, histograms: dict[str, np.ndarray]) -> None:
     axes.clear()
     levels = np.arange(LEVELS)
