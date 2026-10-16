@@ -3,7 +3,7 @@ import unittest
 from PIL import Image
 
 from forensics_app.core import ImageDocument
-from forensics_app.tools.grayscale import GrayscaleTool
+from forensics_app.tools.set1.grayscale import GrayscaleTool
 from forensics_app.tools.registry import ToolRegistry
 
 

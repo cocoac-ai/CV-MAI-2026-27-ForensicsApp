@@ -10,7 +10,7 @@ from PIL import Image
 from skimage import exposure, feature
 
 from forensics_app.core import ImageDocument
-from .base import ForensicsTool, ToolResult
+from ..base import ForensicsTool, ToolResult
 
 
 # Set4: Core function for HOG.
@@ -35,7 +35,7 @@ def extract_hog(
 class HogTool(ForensicsTool):
     tool_id = "hog"
     title = "HOG features"
-    category = "Set4"
+    category = "Set 4 · HOG & Detection"
     description = "Extract HOG features and show the oriented-gradient image."
     requires_image = True
 

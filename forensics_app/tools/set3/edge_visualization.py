@@ -12,7 +12,7 @@ from PIL import Image
 from skimage import color, feature, img_as_float, img_as_ubyte
 
 from forensics_app.core import ImageDocument
-from .base import ForensicsTool, ToolResult
+from ..base import ForensicsTool, ToolResult
 
 # The four visualizations from the Set 3.4 slide.
 STYLE_RED = "Red edges"
@@ -77,7 +77,7 @@ def draw_contours(gray: np.ndarray, edges: np.ndarray) -> np.ndarray:
 class EdgeVisualizationTool(ForensicsTool):
     tool_id = "edge_visualization"
     title = "Edge visualization"
-    category = "Set3"
+    category = "Set 3 · Filtering & Edges"
     description = "Detect edges with Canny and draw them on top of the image."
     requires_image = True
 

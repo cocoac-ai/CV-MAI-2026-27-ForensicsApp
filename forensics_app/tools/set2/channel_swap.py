@@ -11,7 +11,7 @@ from forensics_app.tools.base import ForensicsTool, ToolResult
 class ChannelSwapTool(ForensicsTool):
     tool_id = "channel_swap"
     title = "Channel swap"
-    category = "Set2"
+    category = "Set 2 · Image Processing"
     description = "Swaps the Image Color Channels"
     requires_image = True
 

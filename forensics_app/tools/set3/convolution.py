@@ -6,13 +6,13 @@ from scipy import ndimage
 from PIL import Image
 
 from forensics_app.core import ImageDocument
-from .base import ForensicsTool, ToolResult
+from ..base import ForensicsTool, ToolResult
 
 
 class ConvolutionTool(ForensicsTool):
     tool_id = "convolution"
     title = "Convolution"
-    category = "Set3"
+    category = "Set 3 · Filtering & Edges"
     description = "Apply a custom kernel."
 
     def run(self, parent: tk.Misc, document: ImageDocument) -> ToolResult | None:

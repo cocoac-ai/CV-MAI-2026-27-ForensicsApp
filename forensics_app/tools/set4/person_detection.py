@@ -13,7 +13,7 @@ from PIL import Image, ImageDraw
 from skimage import feature
 
 from forensics_app.core import ImageDocument
-from .base import ForensicsTool, ToolResult
+from ..base import ForensicsTool, ToolResult
 
 # HOG parameters from the slide
 ORIENTATIONS = 16
@@ -91,7 +91,7 @@ def count_windows(image_size: tuple[int, int], window_size: tuple[int, int], ste
 class PersonDetectionTool(ForensicsTool):
     tool_id = "person_detection"
     title = "Person detection (HOG)"
-    category = "Set4"
+    category = "Set 4 · HOG & Detection"
     description = "Find the window most similar to a person template using HOG."
     requires_image = True
 

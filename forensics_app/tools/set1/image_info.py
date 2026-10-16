@@ -5,13 +5,13 @@ from __future__ import annotations
 import tkinter as tk
 
 from forensics_app.core import ImageDocument
-from .base import ForensicsTool, ToolResult
+from ..base import ForensicsTool, ToolResult
 
 
 class ImageInfoTool(ForensicsTool):
     tool_id = "image_info"
     title = "Inspect image"
-    category = "Starter tools"
+    category = "Set 1 · Basics"
     description = "Report basic properties without changing the image."
 
     def run(self, parent: tk.Misc, document: ImageDocument) -> ToolResult:

@@ -7,13 +7,13 @@ from PIL import Image
 from skimage import filters
 
 from forensics_app.core import ImageDocument
-from .base import ForensicsTool, ToolResult
+from ..base import ForensicsTool, ToolResult
 
 
 class ImageFiltersTool(ForensicsTool):
     tool_id = "image_filters"
     title = "Image filters"
-    category = "Set3"
+    category = "Set 3 · Filtering & Edges"
     description = "Apply different filters from scikit-image."
 
     def run(self, parent: tk.Misc, document: ImageDocument) -> ToolResult | None:
