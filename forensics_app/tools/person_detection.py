@@ -1,8 +1,5 @@
 """Set 4.4 - Person detection using HOG and a sliding window.
 
-The HOG of a person template is compared with the HOG of every window of the
-same size in the image. The best window is the one with the smallest
-Euclidean distance (or the largest dot product) to the template.
 """
 
 from __future__ import annotations
@@ -41,6 +38,7 @@ def hog_features(image: np.ndarray) -> np.ndarray:
     )
 
 
+# Set4: Core fucntion
 # Slide a template-sized window over the image and compare HOG features
 def find_person(image: np.ndarray, template: np.ndarray, step: int) -> dict:
     window_h, window_w = template.shape[:2]
