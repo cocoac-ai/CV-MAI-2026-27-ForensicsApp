@@ -84,17 +84,19 @@ class MainWindow:
         body = ttk.Panedwindow(container, orient="horizontal")
         body.pack(fill="both", expand=True)
 
-        sidebar = ttk.Frame(body, style="Sidebar.TFrame", padding=12, width=235)
+        sidebar = ttk.Frame(body, style="Sidebar.TFrame", width=235)
         sidebar.pack_propagate(False)
         body.add(sidebar, weight=0)
-        ttk.Label(sidebar, text="Forensics tools", style="Title.TLabel", background="#eef1f5").pack(
+        tools_frame = self._build_scrollable_sidebar(sidebar)
+
+        ttk.Label(tools_frame, text="Forensics tools", style="Title.TLabel", background="#eef1f5").pack(
             anchor="w", pady=(0, 12)
         )
         for category, tools in self.registry.categories():
-            ttk.Label(sidebar, text=category, style="Category.TLabel").pack(anchor="w", pady=(9, 4))
+            ttk.Label(tools_frame, text=category, style="Category.TLabel").pack(anchor="w", pady=(9, 4))
             for tool in tools:
                 button = ttk.Button(
-                    sidebar,
+                    tools_frame,
                     text=tool.title,
                     style="Tool.TButton",
                     command=lambda selected=tool: self.run_tool(selected),
@@ -118,6 +120,44 @@ class MainWindow:
         self.results.pack(fill="both", expand=True)
 
         ttk.Label(container, textvariable=self.status, anchor="w", padding=(10, 6), relief="sunken").pack(fill="x")
+
+    def _build_scrollable_sidebar(self, sidebar: ttk.Frame) -> ttk.Frame:
+        """Put a scrollable frame inside the sidebar and return it.
+
+        A Frame cannot scroll by itself, so the tool buttons go into a Frame
+        that is placed inside a Canvas; the Scrollbar moves the Canvas view.
+        """
+        canvas = tk.Canvas(sidebar, background="#eef1f5", highlightthickness=0, borderwidth=0)
+        scrollbar = ttk.Scrollbar(sidebar, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=scrollbar.set)
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+
+        tools_frame = ttk.Frame(canvas, style="Sidebar.TFrame", padding=12)
+        frame_id = canvas.create_window((0, 0), window=tools_frame, anchor="nw")
+
+        # When the buttons change size, update how far the canvas can scroll
+        tools_frame.bind("<Configure>", lambda _event: canvas.configure(scrollregion=canvas.bbox("all")))
+        # When the sidebar is resized, make the buttons as wide as the canvas
+        canvas.bind("<Configure>", lambda event: canvas.itemconfigure(frame_id, width=event.width))
+
+        def on_mousewheel(event: tk.Event) -> None:
+            # Only scroll when the mouse is over the sidebar
+            widget = self.root.winfo_containing(event.x_root, event.y_root)
+            if widget is None or not str(widget).startswith(str(canvas)):
+                return
+            # Nothing to scroll when all tools already fit
+            if canvas.yview() == (0.0, 1.0):
+                return
+            if event.num == 4 or event.delta > 0:  # Linux uses buttons 4/5
+                canvas.yview_scroll(-1, "units")
+            else:
+                canvas.yview_scroll(1, "units")
+
+        self.root.bind_all("<MouseWheel>", on_mousewheel)  # Windows and macOS
+        self.root.bind_all("<Button-4>", on_mousewheel)    # Linux scroll up
+        self.root.bind_all("<Button-5>", on_mousewheel)    # Linux scroll down
+        return tools_frame
 
     def _bind_shortcuts(self) -> None:
         self.root.bind_all("<Control-o>", lambda _event: self.open_image())
