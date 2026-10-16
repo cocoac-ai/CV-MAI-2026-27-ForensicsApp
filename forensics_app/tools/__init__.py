@@ -17,6 +17,8 @@ from .canny_edge import CannyTool
 from .edge_visualization import EdgeVisualizationTool
 from .sharpening import SharpeningTool
 
+from .hog import HogTool
+
 
 def build_tool_registry() -> ToolRegistry:
     return ToolRegistry(
@@ -34,7 +36,9 @@ def build_tool_registry() -> ToolRegistry:
             ImageFiltersTool(),
             CannyTool(),
             EdgeVisualizationTool(),
-            SharpeningTool(), 
+            SharpeningTool(),
+
+            HogTool(),
         ]
     )
 
