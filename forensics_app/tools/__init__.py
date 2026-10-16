@@ -18,6 +18,7 @@ from .edge_visualization import EdgeVisualizationTool
 from .sharpening import SharpeningTool
 
 from .hog import HogTool
+from .person_detection import PersonDetectionTool
 
 
 def build_tool_registry() -> ToolRegistry:
@@ -39,6 +40,7 @@ def build_tool_registry() -> ToolRegistry:
             SharpeningTool(),
 
             HogTool(),
+            PersonDetectionTool(),
         ]
     )
 
