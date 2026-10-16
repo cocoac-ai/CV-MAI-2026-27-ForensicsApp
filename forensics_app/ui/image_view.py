@@ -47,9 +47,18 @@ class ImageView(ttk.Frame):
             self._photo = None
             return
 
-        available = (max(self.canvas.winfo_width() - 24, 1), max(self.canvas.winfo_height() - 24, 1))
-        preview = self._source.copy()
-        preview.thumbnail(available, Image.Resampling.LANCZOS)
+        available_w = max(self.canvas.winfo_width() - 24, 1)
+        available_h = max(self.canvas.winfo_height() - 24, 1)
+
+        # Scale so the whole image fits the canvas; small images are enlarged too
+        width, height = self._source.size
+        scale = min(available_w / width, available_h / height)
+        size = (max(round(width * scale), 1), max(round(height * scale), 1))
+
+        # Enlarging: NEAREST keeps pixels sharp (thin HOG/edge lines stay crisp).
+        # Shrinking: LANCZOS averages pixels, so thin lines do not just vanish.
+        method = Image.Resampling.NEAREST if scale > 1 else Image.Resampling.LANCZOS
+        preview = self._source.resize(size, method)
         self._photo = ImageTk.PhotoImage(preview)
         self.canvas.create_image(
             self.canvas.winfo_width() // 2,
