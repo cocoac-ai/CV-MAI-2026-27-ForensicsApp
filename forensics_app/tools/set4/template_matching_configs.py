@@ -22,7 +22,7 @@ class TemplateMatchingConfigsTool(ForensicsTool):
 
     tool_id = "template_matching_configs"
     title = "Template Matching Configs"
-    category = "Set 4 · HOG & Detection"
+    category = "Set 4 · Template Matching & HOG"
     description = (
         "Template matching with configurable rotation, "
         "threshold, and Canny edge superimposition."

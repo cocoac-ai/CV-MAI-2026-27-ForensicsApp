@@ -19,7 +19,7 @@ from ..base import ForensicsTool, ToolResult
 class NormalizedCrossCorrelationTool(ForensicsTool):
     tool_id = "normalized_cross_correlation"
     title = "Normalized cross-correlation"
-    category = "Set 4 · HOG & Detection"
+    category = "Set 4 · Template Matching & HOG"
     description = "Find a template using normalized cross-correlation."
 
     # This tool does not require an image to be loaded first

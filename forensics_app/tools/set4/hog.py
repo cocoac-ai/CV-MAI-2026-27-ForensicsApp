@@ -35,7 +35,7 @@ def extract_hog(
 class HogTool(ForensicsTool):
     tool_id = "hog"
     title = "HOG features"
-    category = "Set 4 · HOG & Detection"
+    category = "Set 4 · Template Matching & HOG"
     description = "Extract HOG features and show the oriented-gradient image."
     requires_image = True
 

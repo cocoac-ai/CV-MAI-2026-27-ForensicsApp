@@ -91,7 +91,7 @@ def count_windows(image_size: tuple[int, int], window_size: tuple[int, int], ste
 class PersonDetectionTool(ForensicsTool):
     tool_id = "person_detection"
     title = "Person detection (HOG)"
-    category = "Set 4 · HOG & Detection"
+    category = "Set 4 · Template Matching & HOG"
     description = "Find the window most similar to a person template using HOG."
     requires_image = True
 
