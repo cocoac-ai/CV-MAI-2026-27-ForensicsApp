@@ -17,6 +17,8 @@ from .set3.canny_edge import CannyTool
 from .set3.edge_visualization import EdgeVisualizationTool
 from .set3.sharpening import SharpeningTool
 
+from .set4.crosscorrelation import NormalizedCrossCorrelationTool
+from .set4.template_matching_configs import TemplateMatchingConfigsTool
 from .set4.hog import HogTool
 from .set4.person_detection import PersonDetectionTool
 
@@ -39,6 +41,8 @@ def build_tool_registry() -> ToolRegistry:
             EdgeVisualizationTool(),
             SharpeningTool(),
 
+            NormalizedCrossCorrelationTool(),
+            TemplateMatchingConfigsTool(),
             HogTool(),
             PersonDetectionTool(),
         ]
