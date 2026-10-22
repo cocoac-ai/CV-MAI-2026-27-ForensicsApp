@@ -23,6 +23,7 @@ from .set4.hog import HogTool
 from .set4.person_detection import PersonDetectionTool
 
 from .set5.image_lookup import ImageLookupTool
+from .set5.corner_detection import CornerDetectionTool
 
 
 def build_tool_registry() -> ToolRegistry:
@@ -49,6 +50,7 @@ def build_tool_registry() -> ToolRegistry:
             PersonDetectionTool(),
 
             ImageLookupTool(),
+            CornerDetectionTool(),
         ]
     )
 
