@@ -22,8 +22,10 @@ from .set4.template_matching_configs import TemplateMatchingConfigsTool
 from .set4.hog import HogTool
 from .set4.person_detection import PersonDetectionTool
 
-from .set5.image_lookup import ImageLookupTool
 from .set5.corner_detection import CornerDetectionTool
+from .set5.keypoints import KeypointsTool
+from .set5.matching import MatchingTool
+from .set5.image_lookup import ImageLookupTool
 
 
 def build_tool_registry() -> ToolRegistry:
@@ -49,8 +51,10 @@ def build_tool_registry() -> ToolRegistry:
             HogTool(),
             PersonDetectionTool(),
 
-            ImageLookupTool(),
             CornerDetectionTool(),
+            KeypointsTool(),
+            MatchingTool(),
+            ImageLookupTool(),
         ]
     )
 

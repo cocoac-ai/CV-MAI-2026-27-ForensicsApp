@@ -6,41 +6,49 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 
 import numpy as np
-from PIL import Image, ImageDraw
-from skimage import feature
+from matplotlib import cm
+from PIL import Image
+from skimage import exposure, feature, img_as_ubyte
 
 from forensics_app.core import ImageDocument
+
 from ..base import ForensicsTool, ToolResult
+from ..common import compose_side_by_side
+from .common import draw_points
 
 METHOD_FAST = "FAST"
 METHOD_HARRIS = "Harris"
 
 
-# Set5: Core function for corners.
-# Compute the corner response image (FAST or Harris), then keep its peaks as corner points
-def detect_corners(gray: np.ndarray, method: str, settings: dict) -> np.ndarray:
+# Set5.1: Core function for corners.
+# Corner response image (FAST or Harris): how much each pixel looks like a corner
+def corner_response(gray: np.ndarray, method: str, settings: dict) -> np.ndarray:
     if method == METHOD_FAST:
-        response = feature.corner_fast(gray, n=settings["fast_n"], threshold=settings["fast_threshold"])
-    else:
-        response = feature.corner_harris(gray, k=settings["harris_k"], sigma=settings["harris_sigma"])
+        return feature.corner_fast(
+            gray, n=settings["fast_n"], threshold=settings["fast_threshold"]
+        )
+    return feature.corner_harris(
+        gray, k=settings["harris_k"], sigma=settings["harris_sigma"]
+    )
 
-    # Each row is (row, col) of one corner
+
+# Keep the peaks of the response image as corner points; each row is (row, col) of one corner
+def find_peaks(response: np.ndarray, settings: dict) -> np.ndarray:
     return feature.corner_peaks(
         response, min_distance=settings["min_distance"], threshold_rel=settings["threshold_rel"]
     )
 
 
-# Draw a red circle around every point on the original (colour) image, like plt.scatter in the slide
-def draw_points(image: Image.Image, points: np.ndarray) -> Image.Image:
-    output = image.convert("RGB")
-    draw = ImageDraw.Draw(output)
+# Set5.1: Response image, then its peaks
+def detect_corners(gray: np.ndarray, method: str, settings: dict) -> np.ndarray:
+    return find_peaks(corner_response(gray, method, settings), settings)
 
-    # Big images are shrunk to fit the window, so their circles must be bigger to stay visible
-    radius = max(4, max(output.size) // 250)
-    width = max(1, radius // 4)
-    for row, col in points:
-        draw.ellipse((col - radius, row - radius, col + radius, row + radius), outline="red", width=width)
-    return output
+
+# Show the response image with a colour map (like plt.imshow in the slide)
+def response_image(response: np.ndarray) -> Image.Image:
+    scaled = exposure.rescale_intensity(response.astype(float), out_range=(0, 1))
+    rgb = cm.viridis(scaled)[..., :3]  # drop the alpha channel
+    return Image.fromarray(img_as_ubyte(rgb))
 
 
 class CornerDetectionTool(ForensicsTool):
@@ -60,8 +68,12 @@ class CornerDetectionTool(ForensicsTool):
 
         # Corners are found on the grayscale image, then drawn on the colour one
         gray = np.asarray(document.current.convert("L"))
-        points = detect_corners(gray, method, settings)
-        output = draw_points(document.current, points)
+        response = corner_response(gray, method, settings)
+        points = find_peaks(response, settings)
+        output = compose_side_by_side({
+            f"{method} response": response_image(response),
+            "Corners": draw_points(document.current, points),
+        })
 
         details = {"Operation": "Corner detection", "Method": method}
         if method == METHOD_FAST:
@@ -96,21 +108,27 @@ class CornerDetectionTool(ForensicsTool):
         for name in (METHOD_FAST, METHOD_HARRIS):
             ttk.Radiobutton(method_box, text=name, value=name, variable=method).pack(anchor="w")
 
-        # (key, label, default) for each parameter box; defaults are the skimage ones
+        # (key, label, default) for each parameter box. FAST and Harris use the skimage defaults;
+        # the peak defaults are our own choice (skimage: no threshold, min_distance=1),
+        # because without a threshold Harris marks thousands of weak points.
         fast_fields = [
             ("fast_n", "Pixels in a row on the circle, 1 to 16 (n):", "12"),
             ("fast_threshold", "Brightness threshold, 0 to 1:", "0.15"),
         ]
         harris_fields = [
             ("harris_k", "k, 0 to 0.25 (higher = fewer corners):", "0.05"),
-            ("harris_sigma", "Sigma (blur of the gradients):", "1"),
+            ("harris_sigma", "Sigma (size of the area around each pixel):", "1"),
         ]
         peaks_fields = [
             ("threshold_rel", "Threshold, 0 to 1 (higher = fewer corners):", "0.1"),
             ("min_distance", "Min distance between corners in pixels:", "5"),
         ]
         entries = {}
-        boxes = (("FAST parameters", fast_fields), ("Harris parameters", harris_fields), ("Peaks", peaks_fields))
+        boxes = (
+            ("FAST parameters", fast_fields),
+            ("Harris parameters", harris_fields),
+            ("Peaks", peaks_fields),
+        )
         for box_title, fields in boxes:
             box = ttk.LabelFrame(frame, text=box_title, padding=8)
             box.pack(fill="both", pady=(8, 0))
@@ -146,7 +164,9 @@ class CornerDetectionTool(ForensicsTool):
                 or settings["min_distance"] < 1
             ):
                 messagebox.showerror(
-                    "Invalid value", "Please check that every value is a number in the range shown.", parent=window
+                    "Invalid value",
+                    "Please check that every value is a number in the range shown.",
+                    parent=window,
                 )
                 return
             result = (method.get(), settings)
