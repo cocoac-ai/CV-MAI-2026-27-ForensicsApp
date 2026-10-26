@@ -11,7 +11,7 @@ from PIL import Image
 from skimage import filters, util
 
 from forensics_app.core import ImageDocument
-from .base import ForensicsTool, ToolResult
+from ..base import ForensicsTool, ToolResult
 
 
 RADIUS_RANGE = (0.1, 20.0)
@@ -71,7 +71,7 @@ def sharpen_image(image: Image.Image, params: SharpeningParams) -> Image.Image:
 class SharpeningTool(ForensicsTool):
     tool_id = "sharpening"
     title = "Image sharpening"
-    category = "Set3"
+    category = "Set 3 · Filtering & Edges"
     description = (
         "Sharpen the image with unsharp masking "
         "(configurable radius and amount)."

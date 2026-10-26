@@ -12,7 +12,7 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFont #ImageDraw for put 3 images together
 
 from forensics_app.core import ImageDocument
-from .base import ForensicsTool, ToolResult
+from ..base import ForensicsTool, ToolResult
 
 CHANNEL_NAMES = ("Red", "Green", "Blue")
 ALL_CHANNELS = "All"
@@ -79,7 +79,7 @@ def split_image(image: Image.Image, channel: str) -> Image.Image:
 class ChannelSplitTool(ForensicsTool):
     tool_id = "channel_split"
     title = "Channel split"
-    category = "Set2"
+    category = "Set 2 · Image Processing"
     description = "Split the working image into red, green and blue channels."
     requires_image = True
 

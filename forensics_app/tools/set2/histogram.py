@@ -13,7 +13,7 @@ import numpy as np
 from PIL import Image
 
 from forensics_app.core import ImageDocument
-from .base import ForensicsTool, ToolResult
+from ..base import ForensicsTool, ToolResult
 
 
 LEVELS = 256
@@ -121,7 +121,7 @@ class HistogramWindow(tk.Toplevel):
 class HistogramTool(ForensicsTool):
     tool_id = "histogram"
     title = "Histogram"
-    category = "Set2"
+    category = "Set 2 · Image Processing"
     description = "Show grayscale or RGB channel histograms in a separate window."
     requires_image = True
 

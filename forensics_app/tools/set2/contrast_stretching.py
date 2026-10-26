@@ -14,7 +14,7 @@ from PIL import Image
 from skimage import exposure
 
 from forensics_app.core import ImageDocument
-from .base import ForensicsTool, ToolResult
+from ..base import ForensicsTool, ToolResult
 
 # Set2: Stretch a uint8 image (gray or RGB). Returns (result, p_low, p_high)."""
 def stretch_contrast(image: np.ndarray, clip_percent: float) -> tuple[np.ndarray, float, float]:
@@ -37,7 +37,7 @@ def stretch_contrast(image: np.ndarray, clip_percent: float) -> tuple[np.ndarray
 class ContrastStretchingTool(ForensicsTool):
     tool_id = "contrast_stretching"
     title = "Contrast stretching"
-    category = "Set2"
+    category = "Set 2 · Image Processing"
     description = "Stretch the intensity range between two percentiles to 0-255."
     requires_image = True
 

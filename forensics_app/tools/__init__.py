@@ -2,20 +2,30 @@
 
 from .registry import ToolRegistry
 
-from .image_info import ImageInfoTool
-from .grayscale import GrayscaleTool
+from .set1.image_info import ImageInfoTool
+from .set1.grayscale import GrayscaleTool
 
-from .channel_split import ChannelSplitTool
-from .channel_swap import ChannelSwapTool
-from .masking import MaskingTool
-from .histogram import HistogramTool
-from .contrast_stretching import ContrastStretchingTool
+from .set2.channel_split import ChannelSplitTool
+from .set2.channel_swap import ChannelSwapTool
+from .set2.masking import MaskingTool
+from .set2.histogram import HistogramTool
+from .set2.contrast_stretching import ContrastStretchingTool
 
-from .convolution import ConvolutionTool
-from .image_filters import ImageFiltersTool
-from .canny_edge import CannyTool
-from .edge_visualization import EdgeVisualizationTool
-from .sharpening import SharpeningTool
+from .set3.convolution import ConvolutionTool
+from .set3.image_filters import ImageFiltersTool
+from .set3.canny_edge import CannyTool
+from .set3.edge_visualization import EdgeVisualizationTool
+from .set3.sharpening import SharpeningTool
+
+from .set4.crosscorrelation import NormalizedCrossCorrelationTool
+from .set4.template_matching_configs import TemplateMatchingConfigsTool
+from .set4.hog import HogTool
+from .set4.person_detection import PersonDetectionTool
+
+from .set5.corner_detection import CornerDetectionTool
+from .set5.keypoints import KeypointsTool
+from .set5.matching import MatchingTool
+from .set5.image_lookup import ImageLookupTool
 
 
 def build_tool_registry() -> ToolRegistry:
@@ -34,7 +44,17 @@ def build_tool_registry() -> ToolRegistry:
             ImageFiltersTool(),
             CannyTool(),
             EdgeVisualizationTool(),
-            SharpeningTool(), 
+            SharpeningTool(),
+
+            NormalizedCrossCorrelationTool(),
+            TemplateMatchingConfigsTool(),
+            HogTool(),
+            PersonDetectionTool(),
+
+            CornerDetectionTool(),
+            KeypointsTool(),
+            MatchingTool(),
+            ImageLookupTool(),
         ]
     )
 

@@ -7,13 +7,13 @@ import tkinter as tk
 from PIL import ImageOps
 
 from forensics_app.core import ImageDocument
-from .base import ForensicsTool, ToolResult
+from ..base import ForensicsTool, ToolResult
 
 
 class GrayscaleTool(ForensicsTool):
     tool_id = "grayscale"
     title = "Convert to grayscale"
-    category = "Starter tools"
+    category = "Set 1 · Basics"
     description = "Convert the working image to an 8-bit grayscale image."
 
     def run(self, parent: tk.Misc, document: ImageDocument) -> ToolResult:

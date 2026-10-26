@@ -7,13 +7,13 @@ from PIL import Image
 from skimage import feature
 
 from forensics_app.core import ImageDocument
-from .base import ForensicsTool, ToolResult
+from ..base import ForensicsTool, ToolResult
 
 
 class CannyTool(ForensicsTool):
     tool_id = "canny"
     title = "Canny edge detection"
-    category = "Set3"
+    category = "Set 3 · Filtering & Edges"
     description = "Detect edges using the Canny algorithm."
 
     def run(self, parent: tk.Misc, document: ImageDocument) -> ToolResult | None:
