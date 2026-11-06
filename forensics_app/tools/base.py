@@ -19,6 +19,8 @@ class ToolResult:
     message: str
     image: Image.Image | None = None
     details: dict[str, Any] = field(default_factory=dict)
+    # Only shown in the workspace: it does not replace the current image or enter the history
+    preview: Image.Image | None = None
 
 
 class ForensicsTool(ABC):
