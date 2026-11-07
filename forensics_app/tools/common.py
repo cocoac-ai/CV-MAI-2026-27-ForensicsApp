@@ -5,7 +5,14 @@ Code shared only inside one set lives in that set's common.py (for example set4/
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from PIL import Image, ImageDraw, ImageFont
+
+# The project folder (the one with run.py). The models are always saved in its models/
+# folder, from wherever the app is started.
+PROJECT_FOLDER = Path(__file__).resolve().parents[2]
+MODELS_FOLDER = PROJECT_FOLDER / "models"
 
 # File types offered by every "open image" dialog
 IMAGE_TYPES = [
