@@ -12,19 +12,17 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 
 from ..base import ForensicsTool, ToolResult
-from ..common import MODELS_FOLDER, PROJECT_FOLDER
+from ..common import PROJECT_FOLDER
 
 
 # ---------------------------------------------------------
 # Paths and configuration
 # ---------------------------------------------------------
 
-# Download LFW to datasets/, save the faces in images/ and the model in models/
-# (all ignored by git), not inside the code folder or the home folder.
-LFW_DIR = PROJECT_FOLDER / "datasets"
+# Everything this version makes goes in one folder (ignored by git): the LFW download
+# (lfw_home/), the face PNGs (train/, test/) and the model. Deleting it removes all of it.
 DATA_DIR = PROJECT_FOLDER / "images" / "set6-eigenfaces"
-MODEL_DIR = MODELS_FOLDER
-PCA_FILE = MODEL_DIR / "eigenfaces_pca.npz"
+PCA_FILE = DATA_DIR / "eigenfaces_pca.npz"
 
 N_COMPONENTS = 100
 RANDOM_STATE = 42
@@ -38,7 +36,7 @@ def load_lfw_data():
     """Load LFW and split faces into training and test sets."""
 
     lfw = fetch_lfw_people(
-        data_home=LFW_DIR,
+        data_home=DATA_DIR,
         min_faces_per_person=20,
         resize=0.4,
     )
@@ -176,7 +174,7 @@ def train_eigenfaces(n_components=N_COMPONENTS):
     # Project test images without retraining PCA.
     test_coefficients = pca.transform(X_test)
 
-    MODEL_DIR.mkdir(
+    DATA_DIR.mkdir(
         parents=True,
         exist_ok=True,
     )

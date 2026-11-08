@@ -10,9 +10,9 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageOps, ImageTk
 
 from ..base import ForensicsTool
-from ..common import MODELS_FOLDER
+from .eigenface import PCA_FILE
 
-MODEL_FILE = MODELS_FOLDER / "eigenfaces_pca.npz"  # saved by Set 6.2
+MODEL_FILE = PCA_FILE  # saved by Set 6.2
 
 
 def load_model():
