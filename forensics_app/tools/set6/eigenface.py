@@ -319,10 +319,13 @@ def visualize_eigenfaces(result, k=10):
             image_shape,
         )
 
-        # Keep the face's width/height ratio.
         image = ImageOps.contain(
             image,
             (140, 145),
+        )
+
+        image = image.resize(
+            (140, 145)
         )
 
         x = column * tile_width + 10
