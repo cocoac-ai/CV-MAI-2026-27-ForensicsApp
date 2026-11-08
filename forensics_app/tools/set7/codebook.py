@@ -323,7 +323,10 @@ class CodebookTool(ForensicsTool):
         details["Train/test folders"] = str(folder)
         details["Model file"] = str(MODEL_FILE)
         return ToolResult(
-            message=f"Codebook of {k} words and SVM built from {len(train)} images; model saved.",
+            message=(
+                f"Codebook of {k} words and SVM built from {len(train)} images; model saved. "
+                f"For 7.3, open an image from {folder / 'test'}."
+            ),
             details=details,
             preview=figure_image(figure),
         )
