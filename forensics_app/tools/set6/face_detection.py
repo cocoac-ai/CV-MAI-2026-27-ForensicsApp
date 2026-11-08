@@ -6,8 +6,8 @@ Supports:
 2. Live face detection using a webcam
 """
 
-from pathlib import Path
 import tkinter as tk
+import urllib.request
 from tkinter import messagebox, ttk
 
 import cv2
@@ -16,16 +16,19 @@ from PIL import Image
 
 from forensics_app.core import ImageDocument
 from ..base import ForensicsTool, ToolResult
+from ..common import MODELS_FOLDER
 
 
 # --------------------------------------------------
 # 1. Load the pretrained YuNet model
 # --------------------------------------------------
 
-MODEL_PATH = (
-    Path(__file__).resolve().parent
-    / "models"
-    / "face_detection_yunet_2023mar.onnx"
+# Kept in the project's models/ folder (ignored by git), not inside the code folder.
+# It is downloaded the first time it is needed.
+MODEL_PATH = MODELS_FOLDER / "face_detection_yunet_2023mar.onnx"
+MODEL_URL = (
+    "https://huggingface.co/opencv/opencv_zoo/resolve/main/"
+    "models/face_detection_yunet/face_detection_yunet_2023mar.onnx"
 )
 
 CONFIDENCE_THRESHOLD = 0.6
@@ -36,11 +39,14 @@ NMS_THRESHOLD = 0.3
 # 2. Create the YuNet detector
 # --------------------------------------------------
 
-def create_detector(width, height):
+def get_model():
     if not MODEL_PATH.is_file():
-        raise FileNotFoundError(
-            f"YuNet model not found: {MODEL_PATH}"
-        )
+        MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
+        urllib.request.urlretrieve(MODEL_URL, str(MODEL_PATH))
+
+
+def create_detector(width, height):
+    get_model()
 
     detector = cv2.FaceDetectorYN.create(
         str(MODEL_PATH),
@@ -120,10 +126,7 @@ def detect_faces(image, detector):
 
 def run_webcam():
 
-    if not MODEL_PATH.is_file():
-        raise FileNotFoundError(
-            f"YuNet model not found: {MODEL_PATH}"
-        )
+    get_model()
 
     cap = cv2.VideoCapture(0)
 
