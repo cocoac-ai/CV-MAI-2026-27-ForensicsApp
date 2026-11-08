@@ -1,7 +1,6 @@
 
 """Set 6.2 — Eigenfaces (PCA) using the LFW face dataset."""
 
-from pathlib import Path
 import csv
 import tkinter as tk
 from tkinter import messagebox, simpledialog
@@ -13,17 +12,17 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 
 from ..base import ForensicsTool, ToolResult
+from ..common import PROJECT_FOLDER
 
 
 # ---------------------------------------------------------
 # Paths and configuration
 # ---------------------------------------------------------
 
-SET6_DIR = Path(__file__).resolve().parent
-
-DATA_DIR = SET6_DIR / "data"
-MODEL_DIR = SET6_DIR / "models"
-PCA_FILE = MODEL_DIR / "eigenfaces_pca.npz"
+# Everything this version makes goes in one folder (ignored by git): the LFW download
+# (lfw_home/), the face PNGs (train/, test/) and the model. Deleting it removes all of it.
+DATA_DIR = PROJECT_FOLDER / "images" / "set6-eigenfaces"
+PCA_FILE = DATA_DIR / "eigenfaces_pca.npz"
 
 N_COMPONENTS = 100
 RANDOM_STATE = 42
@@ -37,6 +36,7 @@ def load_lfw_data():
     """Load LFW and split faces into training and test sets."""
 
     lfw = fetch_lfw_people(
+        data_home=DATA_DIR,
         min_faces_per_person=20,
         resize=0.4,
     )
@@ -94,8 +94,9 @@ def save_face_images(X, y, target_names, image_shape, folder):
             # Convert flattened face back to 2D.
             image_array = face.reshape(image_shape)
 
+            # LFW pixels are 0..1, so scale them to 0..255 first.
             image_array = np.clip(
-                image_array,
+                image_array * 255,
                 0,
                 255,
             ).astype(np.uint8)
@@ -173,7 +174,7 @@ def train_eigenfaces(n_components=N_COMPONENTS):
     # Project test images without retraining PCA.
     test_coefficients = pca.transform(X_test)
 
-    MODEL_DIR.mkdir(
+    DATA_DIR.mkdir(
         parents=True,
         exist_ok=True,
     )
@@ -400,8 +401,9 @@ class EigenfacesTool(ForensicsTool):
 
             return None
 
+        # preview: show the grid without needing an open image.
         return ToolResult(
-            image=output,
+            preview=output,
 
             message=(
                 "Eigenfaces trained successfully. "

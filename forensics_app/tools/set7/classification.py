@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import tkinter as tk
 from pathlib import Path
+from tkinter import messagebox
 
 import numpy as np
 from matplotlib.figure import Figure
@@ -48,7 +49,10 @@ class ClassificationTool(ForensicsTool):
     tool_id = "bow_classification"
     title = "Classify image"
     category = "Set 7 · BOW"
-    description = "Show the visual word histogram of the current image, then classify it."
+    description = (
+        "Open an image from set7-images/test first (the SVM has not seen it). "
+        "Show its visual word histogram, then classify it."
+    )
     requires_image = True
 
     def run(self, parent: tk.Misc, document: ImageDocument) -> ToolResult:
@@ -81,6 +85,13 @@ class ClassificationTool(ForensicsTool):
         path = class_and_file(document.path) if document.path else ""
         is_test = model["is_test"]
         train_images = [class_and_file(item) for item in model["paths"][~is_test]]
+        if path in train_images:
+            messagebox.showwarning(
+                self.title,
+                "The SVM was trained on this image, so the result looks better than it is.\n"
+                "Open an image from set7-images/test instead.",
+                parent=parent,
+            )
         return ToolResult(
             message="Histogram opened in a new window; click Classify to see the result.",
             details={

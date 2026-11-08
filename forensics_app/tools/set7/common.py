@@ -20,9 +20,11 @@ from matplotlib.figure import Figure
 from matplotlib.patches import ConnectionPatch
 from PIL import Image
 
+from ..common import MODELS_FOLDER
+
 DATASET_FOLDER = Path("images/set7-images")
-MODEL_FILE = Path("models/bow_model.npz")
-CLASSIFIER_FILE = Path("models/bow_classifier.pkl")  # an SVM cannot go in a .npz file
+MODEL_FILE = MODELS_FOLDER / "bow_model.npz"
+CLASSIFIER_FILE = MODELS_FOLDER / "bow_classifier.pkl"  # an SVM cannot go in a .npz file
 NO_MODEL_MESSAGE = "No codebook found. Run Set 7.1 (Codebook) first."
 
 # SIFT can find 2000 keypoints in one image: drawing them all would hide the image and the
