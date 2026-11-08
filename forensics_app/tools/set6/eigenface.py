@@ -1,7 +1,6 @@
 
 """Set 6.2 — Eigenfaces (PCA) using the LFW face dataset."""
 
-from pathlib import Path
 import csv
 import tkinter as tk
 from tkinter import messagebox, simpledialog
@@ -13,16 +12,17 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 
 from ..base import ForensicsTool, ToolResult
+from ..common import MODELS_FOLDER, PROJECT_FOLDER
 
 
 # ---------------------------------------------------------
 # Paths and configuration
 # ---------------------------------------------------------
 
-SET6_DIR = Path(__file__).resolve().parent
-
-DATA_DIR = SET6_DIR / "data"
-MODEL_DIR = SET6_DIR / "models"
+# Save the faces in images/ and the model in models/ (both ignored by git),
+# not inside the code folder.
+DATA_DIR = PROJECT_FOLDER / "images" / "set6-eigenfaces"
+MODEL_DIR = MODELS_FOLDER
 PCA_FILE = MODEL_DIR / "eigenfaces_pca.npz"
 
 N_COMPONENTS = 100
@@ -94,8 +94,9 @@ def save_face_images(X, y, target_names, image_shape, folder):
             # Convert flattened face back to 2D.
             image_array = face.reshape(image_shape)
 
+            # LFW pixels are 0..1, so scale them to 0..255 first.
             image_array = np.clip(
-                image_array,
+                image_array * 255,
                 0,
                 255,
             ).astype(np.uint8)
@@ -318,13 +319,10 @@ def visualize_eigenfaces(result, k=10):
             image_shape,
         )
 
+        # Keep the face's width/height ratio.
         image = ImageOps.contain(
             image,
             (140, 145),
-        )
-
-        image = image.resize(
-            (140, 145)
         )
 
         x = column * tile_width + 10
@@ -400,8 +398,9 @@ class EigenfacesTool(ForensicsTool):
 
             return None
 
+        # preview: show the grid without needing an open image.
         return ToolResult(
-            image=output,
+            preview=output,
 
             message=(
                 "Eigenfaces trained successfully. "
