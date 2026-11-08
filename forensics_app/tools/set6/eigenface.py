@@ -19,8 +19,9 @@ from ..common import MODELS_FOLDER, PROJECT_FOLDER
 # Paths and configuration
 # ---------------------------------------------------------
 
-# Save the faces in images/ and the model in models/ (both ignored by git),
-# not inside the code folder.
+# Download LFW to datasets/, save the faces in images/ and the model in models/
+# (all ignored by git), not inside the code folder or the home folder.
+LFW_DIR = PROJECT_FOLDER / "datasets"
 DATA_DIR = PROJECT_FOLDER / "images" / "set6-eigenfaces"
 MODEL_DIR = MODELS_FOLDER
 PCA_FILE = MODEL_DIR / "eigenfaces_pca.npz"
@@ -37,6 +38,7 @@ def load_lfw_data():
     """Load LFW and split faces into training and test sets."""
 
     lfw = fetch_lfw_people(
+        data_home=LFW_DIR,
         min_faces_per_person=20,
         resize=0.4,
     )
