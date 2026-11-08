@@ -50,7 +50,10 @@ class WordHistogramTool(ForensicsTool):
     tool_id = "bow_histogram"
     title = "Histogram of visual words"
     category = "Set 7 · BOW"
-    description = "Show the visual word histogram of one random test image of each class."
+    description = (
+        "For each class, show the visual word histogram of one random image "
+        "from the test folder made by 7.1."
+    )
     requires_image = False
 
     def run(self, parent: tk.Misc, document: ImageDocument) -> ToolResult:
