@@ -27,6 +27,10 @@ from .set5.keypoints import KeypointsTool
 from .set5.matching import MatchingTool
 from .set5.image_lookup import ImageLookupTool
 
+from .set6.face_detection import FaceDetectionTool
+from .set6.eigenface import EigenfacesTool
+from .set6.face_recognition import FaceRecognitionTool
+
 from .set7.codebook import CodebookTool
 from .set7.word_histogram import WordHistogramTool
 from .set7.classification import ClassificationTool
@@ -59,6 +63,10 @@ def build_tool_registry() -> ToolRegistry:
             KeypointsTool(),
             MatchingTool(),
             ImageLookupTool(),
+
+            FaceDetectionTool(),
+            EigenfacesTool(),
+            FaceRecognitionTool(),
 
             CodebookTool(),
             WordHistogramTool(),
