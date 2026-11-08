@@ -215,6 +215,8 @@ class MainWindow:
         self._show_details(result.details)
         self.status.set(result.message)
         self._refresh()
+        if result.preview is not None:
+            self.image_view.show(result.preview)
 
     def undo(self) -> None:
         if self.document.undo():
