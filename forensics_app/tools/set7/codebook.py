@@ -21,6 +21,7 @@ import shutil
 import tkinter as tk
 from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
+from typing import Callable
 
 import numpy as np
 from matplotlib.figure import Figure
@@ -75,13 +76,20 @@ def list_dataset(folder: Path) -> tuple[list[Path], np.ndarray, list[str]]:
 # Keypoints and descriptors of all the images, skipping the ones that cannot be used.
 # Returns the paths and labels that were kept, and one array of each per image.
 # Using 5.2 core function
+# on_image(done, total) is called after every image, to move the progress bar.
 def extract_dataset(
-    paths: list[Path], labels: np.ndarray, method: str, settings: dict
+    paths: list[Path],
+    labels: np.ndarray,
+    method: str,
+    settings: dict,
+    on_image: Callable[[int, int], None] | None = None,
 ) -> tuple[list[Path], np.ndarray, list[np.ndarray], list[np.ndarray]]:
     kept = []
     all_keypoints = []
     all_descriptors = []
     for index, path in enumerate(paths):
+        if on_image is not None:
+            on_image(index + 1, len(paths))
         try:
             keypoints, descriptors = extract_features(
                 to_gray(load_image(path)), method, settings
@@ -182,6 +190,34 @@ def words_figure(patches: list[np.ndarray]) -> Figure:
     return figure
 
 
+# Small window with a progress bar. SIFT takes about 30 seconds on the Set 7 images;
+# without it the app looks frozen.
+class ProgressWindow:
+    def __init__(self, parent: tk.Misc, title: str) -> None:
+        self.window = tk.Toplevel(parent)
+        self.window.title(title)
+        self.window.transient(parent)
+        self.window.resizable(False, False)
+        frame = ttk.Frame(self.window, padding=16)
+        frame.pack(fill="both", expand=True)
+        self.label = ttk.Label(frame, text="Starting…", width=45)
+        self.label.pack(anchor="w")
+        self.bar = ttk.Progressbar(frame, length=320)
+        self.bar.pack(pady=(8, 0))
+        self.window.grab_set()  # no clicks on the main window while 7.1 is working
+
+    # Show the text and fill the bar to done / total
+    def show(self, text: str, done: int, total: int) -> None:
+        self.label["text"] = text
+        self.bar["maximum"] = total
+        self.bar["value"] = done
+        self.window.update()  # draw it now; the computation does not give Tk time to draw
+
+    def close(self) -> None:
+        if self.window.winfo_exists():
+            self.window.destroy()
+
+
 class CodebookTool(ForensicsTool):
     tool_id = "bow_codebook"
     title = "Codebook (visual words)"
@@ -195,9 +231,24 @@ class CodebookTool(ForensicsTool):
             return None  # the user pressed Cancel
         folder, method, settings = params
 
-        # Step 1: read the dataset and extract the descriptors
+        progress = ProgressWindow(parent, self.title)
+        try:
+            return self._build(parent, folder, method, settings, progress)
+        finally:
+            progress.close()  # also when something fails
+
+    def _build(
+        self, parent: tk.Misc, folder: Path, method: str, settings: dict, progress: ProgressWindow
+    ) -> ToolResult:
+        # Step 1: read the dataset and extract the descriptors (the slow step)
         paths, labels, class_names = list_dataset(folder)
-        paths, labels, keypoints, descriptors = extract_dataset(paths, labels, method, settings)
+
+        def on_image(done: int, total: int) -> None:
+            progress.show(f"Step 1/5: {method} descriptors, image {done} / {total}", done, total)
+
+        paths, labels, keypoints, descriptors = extract_dataset(
+            paths, labels, method, settings, on_image
+        )
 
         counts = np.bincount(labels, minlength=len(class_names))
         if len(class_names) < 2 or counts.min() < MIN_IMAGES_PER_CLASS:
@@ -221,12 +272,15 @@ class CodebookTool(ForensicsTool):
         k = WORDS_PER_CLASS * len(class_names)
         if len(train_descriptors) < k:
             return ToolResult(message=f"Only {len(train_descriptors)} descriptors for K = {k}.")
+        progress.show(f"Step 2/5: K-Means with K = {k}", 1, 5)
         centers = build_codebook(train_descriptors, k)
 
         # Step 4: copy the images to the train and test folders
+        progress.show("Step 3/5: copying the train and test images", 2, 5)
         paths = save_split(folder, paths, labels, class_names, is_test)
 
         # Step 5: train the SVM on the train images, measure it on the test images
+        progress.show("Step 4/5: training the SVM", 3, 5)
         histograms = dataset_histograms(descriptors, centers)
         classifier = train_classifier(histograms[~is_test], labels[~is_test])
         accuracy = classifier.score(histograms[is_test], labels[is_test])
@@ -251,8 +305,10 @@ class CodebookTool(ForensicsTool):
         CLASSIFIER_FILE.write_bytes(pickle.dumps(classifier))
 
         # Step 7: show the visual words
+        progress.show("Step 5/5: drawing the visual words", 4, 5)
         patches = word_patches(centers, train_descriptors, train_keypoints, train_owner, paths)
         figure = words_figure(patches)
+        progress.close()  # before the figure window opens
         show_figure(parent, figure, f"Visual words (K = {k})")
 
         details = {"Operation": "Codebook construction", "Folder": str(folder)}
