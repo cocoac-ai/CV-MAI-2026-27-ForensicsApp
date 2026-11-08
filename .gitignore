@@ -9,7 +9,8 @@ build/
 dist/
 *.egg-info/
 outputs/
-models/
+models/*
+!models/face_detection_yunet_2023mar.onnx
 datasets/
 
 #local files
