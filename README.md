@@ -95,7 +95,8 @@ Datasets and trained models are not committed (see `.gitignore`).
 | Used by | File or folder | Where it comes from |
 | --- | --- | --- |
 | 6.1 | `models/face_detection_yunet_2023mar.onnx` | Committed (pretrained, from OpenCV Zoo). Downloaded again if missing. |
-| 6.2, 6.3 | `images/set6-eigenfaces/` | Created by 6.2: LFW download, train/test face PNGs and `eigenfaces_pca.npz`. Delete the folder to remove it all. |
+| 6.2 | `images/set6-images/` | Created by 6.2: LFW download (`lfw_home/`) and the train/test face PNGs. |
+| 6.2, 6.3 | `models/eigenfaces_pca.npz` | Created by 6.2 (PCA model); 6.3 loads it. |
 | 7.1–7.3 | `images/set7-images/<class>/` | The dataset: one subfolder per class (we used butterfly, dalmatian and kangaroo). 7.1 also writes `train/` and `test/` here. |
 | 7.2, 7.3 | `models/bow_model.npz`, `models/bow_classifier.pkl` | Created by 7.1. |
 
