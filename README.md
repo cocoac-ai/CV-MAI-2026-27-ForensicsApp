@@ -88,9 +88,17 @@ The course handout for the app shell is [docs/STUDENT_GUIDE.md](docs/STUDENT_GUI
 | 7.2 | Histogram of visual words | Shows the word histogram of one random test image of each class. |
 | 7.3 | Classify image | Builds the histogram of the open image and classifies it with the 7.1 SVM. |
 
+### Set 8 · CNN
+
+| Exercise | Tool | What it does |
+| --- | --- | --- |
+| 8.1 | (notebook, not in the app) | Trains the CNNs on CIFAR-10 in Colab: a small CNN and InceptionV3 (transfer learning). Exports each one as `.onnx` with a `.json` model passport, and saves the small CNN's features of the test images. |
+| 8.2 | Classify image (CNN) | Loads a trained model and its passport, prepares the open image as the passport says and shows the probability of each of the 10 classes and the training history. Runs the `.onnx` file with onnxruntime (no TensorFlow in the app). |
+| 8.3 | Feature projection (t-SNE, UMAP) | Projects the 128-value features of the CIFAR-10 test images onto 2D with t-SNE and UMAP, one color per class. |
+
 ## Models and data
 
-Datasets and trained models are not committed (see `.gitignore`).
+Datasets and most trained models are not committed (see `.gitignore`).
 
 | Used by | File or folder | Where it comes from |
 | --- | --- | --- |
@@ -99,6 +107,10 @@ Datasets and trained models are not committed (see `.gitignore`).
 | 6.2, 6.3 | `models/eigenfaces_pca.npz` | Created by 6.2 (PCA model); 6.3 loads it. |
 | 7.1–7.3 | `images/set7-images/<class>/` | The dataset: one subfolder per class (we used butterfly, dalmatian and kangaroo). 7.1 also writes `train/` and `test/` here. |
 | 7.2, 7.3 | `models/bow_model.npz`, `models/bow_classifier.pkl` | Created by 7.1. |
+| 8.2 | `models/set8-colab/set8_small_cnn.onnx` + `.json` | Committed (trained in the 8.1 notebook, about 4 MB). |
+| 8.2 | `models/set8-colab/set8_inception.onnx` + `.json` | From the 8.1 notebook; not committed (about 96 MB). The tool lists it only if the files are there. |
+| 8.2 | `images/set8-images/` | Test images: 10 per class from the CIFAR-10 test set, named `<class>_<number>.png`. |
+| 8.3 | `models/set8-colab/set8_test_features.npz` | Committed (features of the 10000 test images, from the 8.1 notebook). |
 
 ## Project layout
 
@@ -110,7 +122,7 @@ forensics_app/
     __init__.py             registers every tool in the sidebar
     base.py, registry.py    tool contract
     common.py               helpers shared by all sets
-    set1/ … set7/           one folder per lab set
+    set1/ … set8/           one folder per lab set
 models/                     pretrained / trained models
 docs/STUDENT_GUIDE.md       starter handout
 ```

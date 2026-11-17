@@ -35,6 +35,9 @@ from .set7.codebook import CodebookTool
 from .set7.word_histogram import WordHistogramTool
 from .set7.classification import ClassificationTool
 
+from .set8.classification import CnnClassificationTool
+from .set8.projection import FeatureProjectionTool
+
 
 def build_tool_registry() -> ToolRegistry:
     return ToolRegistry(
@@ -71,6 +74,9 @@ def build_tool_registry() -> ToolRegistry:
             CodebookTool(),
             WordHistogramTool(),
             ClassificationTool(),
+
+            CnnClassificationTool(),
+            FeatureProjectionTool(),
         ]
     )
 
