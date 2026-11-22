@@ -20,5 +20,7 @@ models/set8-colab/*
 datasets/
 
 #local files
-images/
+images/*
+# Set 8: the 100 CIFAR-10 test images for 8.2 (400 KB)
+!images/set8-images/
 notebooks/
