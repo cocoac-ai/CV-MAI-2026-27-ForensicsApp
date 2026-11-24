@@ -127,7 +127,16 @@ def _image_quality(image: Image.Image) -> tuple[str, float, float]:
             sharpness, brightness)
 
 
-def _settings_dialog(parent: tk.Misc, class_names: dict[int, str], *, blood: bool):
+def _find_label_file(image_path: Path | None) -> str:
+    """YOLO dataset layout: .../images/name.jpg -> .../labels/name.txt (empty if not found)."""
+    if image_path is None:
+        return ""
+    label = image_path.parent.parent / "labels" / (image_path.stem + ".txt")
+    return str(label) if label.is_file() else ""
+
+
+def _settings_dialog(parent: tk.Misc, class_names: dict[int, str], *, blood: bool,
+                     default_gt: str = ""):
     w = tk.Toplevel(parent)
     w.title("Set 9 — " + ("Blood Cell Analysis" if blood else "Pretrained YOLO"))
     w.transient(parent)
@@ -141,7 +150,7 @@ def _settings_dialog(parent: tk.Misc, class_names: dict[int, str], *, blood: boo
     review = tk.BooleanVar(value=blood)
     export = tk.BooleanVar(value=False)
     selected = {key: tk.BooleanVar(value=True) for key in class_names}
-    gt_path = tk.StringVar(value="")
+    gt_path = tk.StringVar(value=default_gt)
 
     ttk.Label(frame, text="Confidence threshold").pack(anchor="w")
     conf_label = ttk.Label(frame, text="0.25")
@@ -425,7 +434,8 @@ class _YOLOToolBase(ForensicsTool):
             messagebox.showerror("YOLO load error", str(exc), parent=parent)
             return None
 
-        config = _settings_dialog(parent, names, blood=self.is_blood_model)
+        config = _settings_dialog(parent, names, blood=self.is_blood_model,
+                                  default_gt=_find_label_file(document.path))
         if config is None:
             return None
         image = document.current.convert("RGB")
