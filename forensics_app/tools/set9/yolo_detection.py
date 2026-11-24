@@ -354,10 +354,7 @@ def _annotate(image: Image.Image, detections: list[dict],
     output = image.convert("RGB").copy()
     draw = ImageDraw.Draw(output)
     font = _label_font(output.width, output.height)
-    # Green = ground truth; model predictions use class-specific colors.
-    for gt in ground_truth:
-        _draw_box_label(draw, output, gt["xyxy"], f"GT {gt['name']}",
-                        (20, 160, 40), font)
+    # Model predictions use class-specific colors.
     for d in detections:
         if d["status"] not in ("accepted", "normal"):
             continue
@@ -368,7 +365,21 @@ def _annotate(image: Image.Image, detections: list[dict],
         if d["status"] == "accepted":
             label += " (reviewed)"
         _draw_box_label(draw, output, d["xyxy"], label, color, font)
-    return output
+    if not ground_truth:
+        return output
+
+    # With ground truth: GT (green) on the left, predictions on the right.
+    # Side by side, because on dense smears the two sets of tags overlap.
+    gt_image = image.convert("RGB").copy()
+    gt_draw = ImageDraw.Draw(gt_image)
+    for gt in ground_truth:
+        _draw_box_label(gt_draw, gt_image, gt["xyxy"], f"GT {gt['name']}",
+                        (20, 160, 40), font)
+    gap = 10
+    combined = Image.new("RGB", (2 * output.width + gap, output.height), "white")
+    combined.paste(gt_image, (0, 0))
+    combined.paste(output, (output.width + gap, 0))
+    return combined
 
 
 def _export_csv(parent: tk.Misc, rows: list[dict], report: dict):
