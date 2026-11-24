@@ -15,12 +15,12 @@ from .set2.contrast_stretching import ContrastStretchingTool
 # Set 3
 from .set3.convolution import ConvolutionTool
 from .set3.image_filters import ImageFiltersTool
-from .set3.canny import CannyTool
+from .set3.canny_edge import CannyTool
 from .set3.edge_visualization import EdgeVisualizationTool
 from .set3.sharpening import SharpeningTool
 
 # Set 4
-from .set4.normalized_cross_correlation import NormalizedCrossCorrelationTool
+from .set4.crosscorrelation import NormalizedCrossCorrelationTool
 from .set4.template_matching_configs import TemplateMatchingConfigsTool
 from .set4.hog import HogTool
 from .set4.person_detection import PersonDetectionTool
