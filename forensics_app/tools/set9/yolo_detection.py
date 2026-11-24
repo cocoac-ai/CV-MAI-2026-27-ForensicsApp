@@ -517,3 +517,13 @@ class BloodCellDetectionTool(_YOLOToolBase):
     def run(self, parent: tk.Misc, document: ImageDocument) -> ToolResult | None:
         from .blood_studio import open_blood_studio
         return open_blood_studio(parent, document, self.model_path)
+
+
+class BloodCellGroundTruthTool(_YOLOToolBase):
+    """Set 9.3: ground-truth boxes (green) and predicted boxes on the same image."""
+    tool_id = "blood_cell_gt_vs_pred"
+    title = "Blood Cell Detection (GT vs Pred)"
+    category = "Set 9 · Object Detection"
+    description = "Draw ground-truth boxes from a YOLO .txt file next to the model's predictions."
+    model_path = BLOOD_MODEL
+    is_blood_model = True

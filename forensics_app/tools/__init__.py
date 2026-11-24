@@ -49,6 +49,7 @@ from .set8.projection import FeatureProjectionTool
 from .set9.yolo_detection import (
     PretrainedYOLOTool,
     BloodCellDetectionTool,
+    BloodCellGroundTruthTool,
 )
 
 
@@ -102,6 +103,7 @@ def build_tool_registry() -> ToolRegistry:
             # Set 9
             PretrainedYOLOTool(),
             BloodCellDetectionTool(),
+            BloodCellGroundTruthTool(),
         ]
     )
 
