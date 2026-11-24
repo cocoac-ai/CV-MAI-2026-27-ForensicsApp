@@ -147,7 +147,7 @@ def _settings_dialog(parent: tk.Misc, class_names: dict[int, str], *, blood: boo
     confidence = tk.DoubleVar(value=0.25)
     iou = tk.DoubleVar(value=0.45)
     show_scores = tk.BooleanVar(value=True)
-    review = tk.BooleanVar(value=blood)
+    review = tk.BooleanVar(value=False)
     export = tk.BooleanVar(value=False)
     selected = {key: tk.BooleanVar(value=True) for key in class_names}
     gt_path = tk.StringVar(value=default_gt)
@@ -363,7 +363,12 @@ def _annotate(image: Image.Image, detections: list[dict],
     output = image.convert("RGB").copy()
     draw = ImageDraw.Draw(output)
     font = _label_font(output.width, output.height)
-    # Model predictions use class-specific colors.
+    # Ground truth: green boxes without text (tags would overlap on dense smears;
+    # the GT counts per class are in the Results panel).
+    thickness = max(3, round(min(output.size) / 230))
+    for gt in ground_truth:
+        draw.rectangle(gt["xyxy"], outline=(20, 160, 40), width=thickness)
+    # Model predictions on top, with class-specific colors and tags.
     for d in detections:
         if d["status"] not in ("accepted", "normal"):
             continue
@@ -374,21 +379,7 @@ def _annotate(image: Image.Image, detections: list[dict],
         if d["status"] == "accepted":
             label += " (reviewed)"
         _draw_box_label(draw, output, d["xyxy"], label, color, font)
-    if not ground_truth:
-        return output
-
-    # With ground truth: GT (green) on the left, predictions on the right.
-    # Side by side, because on dense smears the two sets of tags overlap.
-    gt_image = image.convert("RGB").copy()
-    gt_draw = ImageDraw.Draw(gt_image)
-    for gt in ground_truth:
-        _draw_box_label(gt_draw, gt_image, gt["xyxy"], f"GT {gt['name']}",
-                        (20, 160, 40), font)
-    gap = 10
-    combined = Image.new("RGB", (2 * output.width + gap, output.height), "white")
-    combined.paste(gt_image, (0, 0))
-    combined.paste(output, (output.width + gap, 0))
-    return combined
+    return output
 
 
 def _export_csv(parent: tk.Misc, rows: list[dict], report: dict):
@@ -487,6 +478,10 @@ class _YOLOToolBase(ForensicsTool):
             "Mean brightness": f"{brightness:.1f}",
             "Ground-truth boxes loaded": len(ground_truth),
         }
+        if ground_truth:
+            report["Green boxes"] = "ground truth (GT)"
+            for name, n in Counter(gt["name"] for gt in ground_truth).items():
+                report[f"GT {name}"] = n
         for name in names.values():
             if self.is_blood_model or counts.get(name):
                 report[f"{name} detected"] = counts.get(name, 0)
