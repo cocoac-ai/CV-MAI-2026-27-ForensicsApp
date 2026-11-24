@@ -27,7 +27,7 @@ from ..base import ForensicsTool, ToolResult
 from ..common import MODELS_FOLDER
 
 
-BLOOD_MODEL = MODELS_FOLDER / "blood_cell_best.pt"
+BLOOD_MODEL = MODELS_FOLDER / "set9-colab" / "blood_cell_best.pt"
 GENERAL_MODEL = MODELS_FOLDER / "yolo11n.pt"
 COLORS = [(45, 130, 250), (250, 90, 90), (190, 85, 225), (255, 170, 40)]
 
@@ -127,7 +127,16 @@ def _image_quality(image: Image.Image) -> tuple[str, float, float]:
             sharpness, brightness)
 
 
-def _settings_dialog(parent: tk.Misc, class_names: dict[int, str], *, blood: bool):
+def _find_label_file(image_path: Path | None) -> str:
+    """YOLO dataset layout: .../images/name.jpg -> .../labels/name.txt (empty if not found)."""
+    if image_path is None:
+        return ""
+    label = image_path.parent.parent / "labels" / (image_path.stem + ".txt")
+    return str(label) if label.is_file() else ""
+
+
+def _settings_dialog(parent: tk.Misc, class_names: dict[int, str], *, blood: bool,
+                     default_gt: str = ""):
     w = tk.Toplevel(parent)
     w.title("Set 9 — " + ("Blood Cell Analysis" if blood else "Pretrained YOLO"))
     w.transient(parent)
@@ -138,10 +147,10 @@ def _settings_dialog(parent: tk.Misc, class_names: dict[int, str], *, blood: boo
     confidence = tk.DoubleVar(value=0.25)
     iou = tk.DoubleVar(value=0.45)
     show_scores = tk.BooleanVar(value=True)
-    review = tk.BooleanVar(value=blood)
+    review = tk.BooleanVar(value=False)
     export = tk.BooleanVar(value=False)
     selected = {key: tk.BooleanVar(value=True) for key in class_names}
-    gt_path = tk.StringVar(value="")
+    gt_path = tk.StringVar(value=default_gt)
 
     ttk.Label(frame, text="Confidence threshold").pack(anchor="w")
     conf_label = ttk.Label(frame, text="0.25")
@@ -354,10 +363,12 @@ def _annotate(image: Image.Image, detections: list[dict],
     output = image.convert("RGB").copy()
     draw = ImageDraw.Draw(output)
     font = _label_font(output.width, output.height)
-    # Green = ground truth; model predictions use class-specific colors.
+    # Ground truth: green boxes without text (tags would overlap on dense smears;
+    # the GT counts per class are in the Results panel).
+    thickness = max(3, round(min(output.size) / 230))
     for gt in ground_truth:
-        _draw_box_label(draw, output, gt["xyxy"], f"GT {gt['name']}",
-                        (20, 160, 40), font)
+        draw.rectangle(gt["xyxy"], outline=(20, 160, 40), width=thickness)
+    # Model predictions on top, with class-specific colors and tags.
     for d in detections:
         if d["status"] not in ("accepted", "normal"):
             continue
@@ -414,7 +425,8 @@ class _YOLOToolBase(ForensicsTool):
             messagebox.showerror("YOLO load error", str(exc), parent=parent)
             return None
 
-        config = _settings_dialog(parent, names, blood=self.is_blood_model)
+        config = _settings_dialog(parent, names, blood=self.is_blood_model,
+                                  default_gt=_find_label_file(document.path))
         if config is None:
             return None
         image = document.current.convert("RGB")
@@ -466,6 +478,10 @@ class _YOLOToolBase(ForensicsTool):
             "Mean brightness": f"{brightness:.1f}",
             "Ground-truth boxes loaded": len(ground_truth),
         }
+        if ground_truth:
+            report["Green boxes"] = "ground truth (GT)"
+            for name, n in Counter(gt["name"] for gt in ground_truth).items():
+                report[f"GT {name}"] = n
         for name in names.values():
             if self.is_blood_model or counts.get(name):
                 report[f"{name} detected"] = counts.get(name, 0)
@@ -517,3 +533,13 @@ class BloodCellDetectionTool(_YOLOToolBase):
     def run(self, parent: tk.Misc, document: ImageDocument) -> ToolResult | None:
         from .blood_studio import open_blood_studio
         return open_blood_studio(parent, document, self.model_path)
+
+
+class BloodCellGroundTruthTool(_YOLOToolBase):
+    """Set 9.3: ground-truth boxes (green) and predicted boxes on the same image."""
+    tool_id = "blood_cell_gt_vs_pred"
+    title = "Blood Cell Detection (GT vs Pred)"
+    category = "Set 9 · Object Detection"
+    description = "Draw ground-truth boxes from a YOLO .txt file next to the model's predictions."
+    model_path = BLOOD_MODEL
+    is_blood_model = True
