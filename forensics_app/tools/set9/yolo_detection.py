@@ -27,7 +27,7 @@ from ..base import ForensicsTool, ToolResult
 from ..common import MODELS_FOLDER
 
 
-BLOOD_MODEL = MODELS_FOLDER / "blood_cell_best.pt"
+BLOOD_MODEL = MODELS_FOLDER / "set9-colab" / "blood_cell_best.pt"
 GENERAL_MODEL = MODELS_FOLDER / "yolo11n.pt"
 COLORS = [(45, 130, 250), (250, 90, 90), (190, 85, 225), (255, 170, 40)]
 
