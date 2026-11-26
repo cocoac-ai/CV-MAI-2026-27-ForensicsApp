@@ -99,19 +99,23 @@ The course handout for the app shell is [docs/STUDENT_GUIDE.md](docs/STUDENT_GUI
 ## Models and data
 
 Datasets and most trained models are not committed (see `.gitignore`).
+Models are kept in one folder per set: `models/set6/`, `models/set7/`, `models/set8/colab/`, `models/set9/`.
 
 | Used by | File or folder | Where it comes from |
 | --- | --- | --- |
-| 6.1 | `models/face_detection_yunet_2023mar.onnx` | Committed (pretrained, from OpenCV Zoo). Downloaded again if missing. |
+| 6.1 | `models/set6/face_detection_yunet_2023mar.onnx` | Committed (pretrained, from OpenCV Zoo). Downloaded again if missing. |
 | 6.2 | `images/set6-images/` | Created by 6.2: LFW download (`lfw_home/`) and the train/test face PNGs. |
-| 6.2, 6.3 | `models/eigenfaces_pca.npz` | Created by 6.2 (PCA model); 6.3 loads it. |
+| 6.2, 6.3 | `models/set6/eigenfaces_pca.npz` | Created by 6.2 (PCA model); 6.3 loads it. |
 | 7.1–7.3 | `images/set7-images/<class>/` | The dataset: one subfolder per class (we used butterfly, dalmatian and kangaroo). 7.1 also writes `train/` and `test/` here. |
-| 7.2, 7.3 | `models/bow_model.npz`, `models/bow_classifier.pkl` | Created by 7.1. |
-| 8.2 | `models/set8-colab/set8_small_cnn.onnx` + `.json` | Committed (trained in the 8.1 notebook, about 4 MB; Colab run of 2026-11-22 (evening), test accuracy 67.2%). |
-| 8.2 | `models/set8-colab/set8_inception.onnx` + `.json` | From the 8.1 notebook (test accuracy 78.9%); not committed (about 96 MB). The tool lists it only if the files are there. |
+| 7.2, 7.3 | `models/set7/bow_model.npz`, `models/set7/bow_classifier.pkl` | Created by 7.1. |
+| 8.2 | `models/set8/colab/set8_small_cnn.onnx` + `.json` | Committed (trained in the 8.1 notebook, about 4 MB; Colab run of 2026-11-22 (evening), test accuracy 67.2%). |
+| 8.2 | `models/set8/colab/set8_inception.onnx` + `.json` | From the 8.1 notebook (test accuracy 78.9%); not committed (about 96 MB). The tool lists it only if the files are there. |
 | 8.2 | `images/set8-images/` | Committed (about 400 KB). Test images: 10 per class from the CIFAR-10 test set, named `<class>_<number>.png`. |
-| 8.3 | `models/set8-colab/set8_test_features.npz` | Committed (small CNN features of the 10000 test images, 128 values each, from the 8.1 notebook). |
-| 8.3 | `models/set8-colab/set8_test_features_inception.npz` | InceptionV3 features of the 10000 test images (1024 values each, the layer before its classifier); not committed (about 41 MB). The tool lists it only if the file is there. |
+| 8.3 | `models/set8/colab/set8_test_features.npz` | Committed (small CNN features of the 10000 test images, 128 values each, from the 8.1 notebook). |
+| 8.3 | `models/set8/colab/set8_test_features_inception.npz` | InceptionV3 features of the 10000 test images (1024 values each, the layer before its classifier); not committed (about 41 MB). The tool lists it only if the file is there. |
+| 8.2, 8.3 | `models/set8/colab/set8_shallow_cnn.*`, `set8_vgg.*`, `set8_test_features_shallow_cnn.npz`, `set8_test_features_vgg.npz` | From the 8.1 notebook; not committed. The tools list them only if the files are there. |
+| 9 | `models/set9/yolo11n.pt` | Committed (pretrained YOLO11n from Ultralytics). |
+| 9 | `models/set9/colab/blood_cell_best.pt` | Committed (blood cell model trained in Colab, about 5.5 MB). |
 
 ## Project layout
 
@@ -124,7 +128,7 @@ forensics_app/
     base.py, registry.py    tool contract
     common.py               helpers shared by all sets
     set1/ … set8/           one folder per lab set
-models/                     pretrained / trained models
+models/setN/                pretrained / trained models, one folder per set
 docs/STUDENT_GUIDE.md       starter handout
 ```
 

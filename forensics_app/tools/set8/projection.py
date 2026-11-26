@@ -2,7 +2,7 @@
 
 The Set 8 notebooks give every test image to a model of 8.1 and keep the values of the layer
 before its classifier: one feature vector per image (small CNN: its 'features' layer, 128 values;
-InceptionV3: its Dense(1024) layer). They are saved in models/set8-colab/ or models/set8-local/,
+InceptionV3: its Dense(1024) layer). They are saved in models/set8/colab/ or models/set8/local/,
 one .npz file per model.
 1. Choose the features (which model, trained in Colab or locally); load them and the true class
    of each image.
@@ -34,13 +34,13 @@ FEATURE_FILES = {
     "VGG": "set8_test_features_vgg.npz",  # 128 values
     "InceptionV3": "set8_test_features_inception.npz",  # 1024 values
 }
-NO_FEATURES_MESSAGE = "No features found (set8_test_features*.npz in models/set8-colab or local)."
+NO_FEATURES_MESSAGE = "No features found (set8_test_features*.npz in models/set8/colab or local)."
 DEFAULT_PER_CLASS = 200  # 10 classes x 200 = 2000 points: a few seconds
 MAX_PER_CLASS = 1000  # the CIFAR-10 test set has 1000 images per class
 
 
 # Every features file that exists, for example
-# "InceptionV3 (Colab)" -> models/set8-colab/set8_test_features_inception.npz
+# "InceptionV3 (Colab)" -> models/set8/colab/set8_test_features_inception.npz
 def available_features() -> dict[str, Path]:
     files = {}
     for network, file in FEATURE_FILES.items():

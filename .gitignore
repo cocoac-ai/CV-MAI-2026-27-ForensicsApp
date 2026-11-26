@@ -10,13 +10,25 @@ dist/
 *.egg-info/
 outputs/
 models/*
-!models/face_detection_yunet_2023mar.onnx
-# Set 8: the small CNN and its features (InceptionV3 is too big, kept local)
-!models/set8-colab/
-models/set8-colab/*
-!models/set8-colab/set8_small_cnn.onnx
-!models/set8-colab/set8_small_cnn.json
-!models/set8-colab/set8_test_features.npz
+# Models are in one folder per set (models/setN/). Committed: the small ones below.
+!models/set6/
+models/set6/*
+!models/set6/face_detection_yunet_2023mar.onnx
+# Set 8: the small CNN and its features (InceptionV3, shallow CNN and VGG are kept local)
+!models/set8/
+models/set8/*
+!models/set8/colab/
+models/set8/colab/*
+!models/set8/colab/set8_small_cnn.onnx
+!models/set8/colab/set8_small_cnn.json
+!models/set8/colab/set8_test_features.npz
+# Set 9: pretrained YOLO and the blood cell model
+!models/set9/
+models/set9/*
+!models/set9/yolo11n.pt
+!models/set9/colab/
+models/set9/colab/*
+!models/set9/colab/blood_cell_best.pt
 datasets/
 
 #local files
