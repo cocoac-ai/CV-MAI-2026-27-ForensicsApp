@@ -20,9 +20,9 @@ from ..common import MODELS_FOLDER, PROJECT_FOLDER
 # ---------------------------------------------------------
 
 # Data in images/set6-images (like the other sets): the LFW download (lfw_home/) and the
-# face PNGs (train/, test/). The model goes in models/, like the other models.
+# face PNGs (train/, test/). The model goes in models/set6/.
 DATA_DIR = PROJECT_FOLDER / "images" / "set6-images"
-PCA_FILE = MODELS_FOLDER / "eigenfaces_pca.npz"
+PCA_FILE = MODELS_FOLDER / "set6" / "eigenfaces_pca.npz"
 
 N_COMPONENTS = 100
 RANDOM_STATE = 42

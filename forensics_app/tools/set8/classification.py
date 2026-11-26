@@ -1,7 +1,7 @@
 """Set 8.2 - Load a pretrained CNN and classify an image.
 
 The models are trained in the Set 8 notebooks (Set 8.1, in Colab or locally) and saved in
-models/set8-colab/ or models/set8-local/: a .onnx file (the network) and a .json file
+models/set8/colab/ or models/set8/local/: a .onnx file (the network) and a .json file
 (its passport).
 1. Choose a model: the small CNN or InceptionV3 (transfer learning), trained in Colab or locally.
 2. Load its passport and the network. onnxruntime runs the .onnx file, so the app does
@@ -36,11 +36,11 @@ NETWORKS = {
     "VGG": "set8_vgg",  # deeper, input 64x64
     "InceptionV3": "set8_inception",  # transfer learning
 }
-NO_MODEL_MESSAGE = "No Set 8 model found in models/set8-colab or models/set8-local."
+NO_MODEL_MESSAGE = "No Set 8 model found in models/set8/colab or models/set8/local."
 
 
 # Every model that has both files, for example
-# "Small CNN (Colab)" -> models/set8-colab/set8_small_cnn (+ .onnx / .json)
+# "Small CNN (Colab)" -> models/set8/colab/set8_small_cnn (+ .onnx / .json)
 def available_models() -> dict[str, Path]:
     models = {}
     for network, file in NETWORKS.items():

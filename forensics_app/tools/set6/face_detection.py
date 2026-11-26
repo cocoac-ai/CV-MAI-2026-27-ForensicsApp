@@ -23,9 +23,9 @@ from ..common import MODELS_FOLDER
 # 1. Load the pretrained YuNet model
 # --------------------------------------------------
 
-# Kept in the project's models/ folder (ignored by git), not inside the code folder.
+# Kept in the project's models/set6/ folder, not inside the code folder.
 # It is downloaded the first time it is needed.
-MODEL_PATH = MODELS_FOLDER / "face_detection_yunet_2023mar.onnx"
+MODEL_PATH = MODELS_FOLDER / "set6" / "face_detection_yunet_2023mar.onnx"
 MODEL_URL = (
     "https://huggingface.co/opencv/opencv_zoo/resolve/main/"
     "models/face_detection_yunet/face_detection_yunet_2023mar.onnx"
