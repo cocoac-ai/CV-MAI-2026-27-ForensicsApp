@@ -31,7 +31,9 @@ from .common import TRAINED_IN
 
 # Name shown in the dialog -> file name (without .onnx / .json)
 NETWORKS = {
+    "Shallow CNN": "set8_shallow_cnn",  # 1 conv layer
     "Small CNN": "set8_small_cnn",
+    "VGG": "set8_vgg",  # deeper, input 64x64
     "InceptionV3": "set8_inception",  # transfer learning
 }
 NO_MODEL_MESSAGE = "No Set 8 model found in models/set8-colab or models/set8-local."

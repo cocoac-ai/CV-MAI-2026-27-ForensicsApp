@@ -30,6 +30,8 @@ from .common import TRAINED_IN
 # Model shown in the dialog -> its features file (small CNN first: it is the default)
 FEATURE_FILES = {
     "Small CNN": "set8_test_features.npz",  # 'features' layer, 128 values
+    "Shallow CNN": "set8_test_features_shallow_cnn.npz",  # 100 values
+    "VGG": "set8_test_features_vgg.npz",  # 128 values
     "InceptionV3": "set8_test_features_inception.npz",  # 1024 values
 }
 NO_FEATURES_MESSAGE = "No features found (set8_test_features*.npz in models/set8-colab or local)."
